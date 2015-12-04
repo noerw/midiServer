@@ -1,7 +1,9 @@
 midiServer
 ==========
 
-MIDI websocket nodeJS server.
+MIDI websocket client & server, running on node.js
+Allows broadcasting of MIDI messages over the network/web.
+May also function as a MIDI router on a single machine.
 
 Installation
 ------------
@@ -12,33 +14,27 @@ On linux the packages `alsa-base`, `libasound2-dev`, `build-essential`, `python`
 Windows and OSX need Python 2.7 & a C++ Compiler.
 For more information see [here](https://www.npmjs.com/package/midi#prerequisites).
 
-To install, run `npm install` once.
+Once the dependencies are installed, run `npm install`.
 
-Running
+Usage
 -------
 
-- To display help:
+- display help:
 
     `node midiServer.js -h`
 
-- To list MIDI inputs/outputs:
+- list MIDI inputs/outputs. the indizes are used then for the `-i` and `-o` arguments.
 
-    `node <midiServer.js> -l`
+    `node midiServer.js -l`
 
-- To select inputs/outputs:
+- run the server, which then broadcasts MIDI messages from the selected MIDI input:
 
-    `node midiServer.js -i <midiInputNumber> -o <midiOutputNumber>`
+    `node midiServer.js -i <midiInputNumber> [-p <portNumber]`
 
-- To choose a different listening port (defaults to `1337`):
+- run the client, which connects to a server instance, and sends the recieved messages to the selected MIDI output:
 
-    `node midiServer.js -p <portNumber>`
+    `node midiServer.js -o <midiOutputNumber> [-u <serverAddress> -p <portNumber>]`
 
-Websocket message syntax
-------------------------
+- route messages on a single machine from one midi device to another:
 
-`[ eventType, note, velocity ]`
-
-
-    eventType: 144 = note On
-               128 = note Off
-               176 = CC message
+    `node midiServer.js -i <midiInputNumber> -o <midiOutputNumber> [-p <portNumber>]`
