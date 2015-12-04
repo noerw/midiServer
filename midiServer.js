@@ -21,31 +21,22 @@
 
 var program   = require('commander'),
     midi      = require('midi'),
-    websocket = require('websocket'),
-    http      = require('http');
+    WebSocket = require('ws'),
+    WebSocketServer = WebSocket.Server;
 
 // Define version/args
 program
-    .version('0.2')
-    .option('-l, --list',       'list MIDI inputs/outputs by number')
-    .option('-i, --input <n>',  'MIDI input number', parseInt)
-    .option('-o, --output <n>', 'MIDI output number', parseInt)
-    .option('-p, --port <n>',   'server listening port', parseInt)
+    .version('0.3')
+    .option('-l, --list',       'list MIDI inputs/outputs by index')
+    .option('-i, --input <n>',  'MIDI input number  - act as server', parseInt)
+    .option('-o, --output <n>', 'MIDI output number - act as client', parseInt)
+    .option('-u, --url <s>',    'connection url')
+    .option('-p, --port <n>',   'connection port', parseInt)
     .parse(process.argv);
 
 // Initialize MIDI IN/OUT
 var input  = new midi.input(),
     output = new midi.output();
-
-// Websocket variables
-var connection,
-    port = 1337;
-
-// Server listening port
-if (program.port) {
-    port = program.port;
-}
-console.log("Server Listening on port " + port);
 
 // List MIDI ports
 if (program.list) {
@@ -60,55 +51,75 @@ if (program.list) {
     process.exit(0);
 }
 
-// Select MIDI IN
+// if started with input param, open the MIDI-in port & start websocket server
 if (program.input) {
     if (program.input >= 0 && program.input < input.getPortCount()) {
         console.log("MIDI IN: " + input.getPortName(program.input));
         input.openPort(program.input);
+        createServer(program.port || 1234);
     } else {
-        console.log("Wrong input number. Use argument -l to list them.");
+        console.log("Invalid input number. Use -l to list them.");
         process.exit(1);
     }
 }
 
-// Select MIDI OUT
+// if started with output param, open the MIDI-out port & start websocket client
 if (program.output) {
     if (program.output >= 0 && program.output < output.getPortCount()) {
         console.log("MIDI OUT: "+ output.getPortName(program.output));
         output.openPort(program.output);
+
+        createClient(program.url || "localhost", program.port || 1234);
     } else {
-        console.log("Wrong output number. Use argument -l to list them.");
+        console.log("Invalid output number. Use -l to list them.");
         process.exit(1);
     }
 }
 
-// Websocket
-var server = http.createServer(function(request, response) {});
-server.listen(port, function() { });
-
-// Server creation
-var wsServer = new websocket.server({ httpServer: server });
-
-// WS server
-wsServer.on('request', function(request) {
-    connection = request.accept(null, request.origin);
-    console.log("Connection request");
-
-    // Received MIDI event
-    connection.on('message', function(message) {
-        if (message.type === 'utf8') {
-            output.sendMessage(JSON.parse(message.utf8Data));
+function createServer(port) {
+    var wss = new WebSocketServer({ port: port }, function(err) {
+        if (err) {
+            console.error(err);
+            process.exit(2);
         }
+        console.log("Server Listening on port " + port);
     });
 
-    connection.on('close', function(connection) {
-        console.log("Connection lost");
-    });
-});
+    wss.on('connection', function(ws) {
+        console.log("client connected from %s", ws._socket.remoteAddress);
 
-// Send MIDI event
-input.on('message', function(deltaTime, message) {
-    if (connection !== undefined) {
-         connection.sendUTF(JSON.stringify(message));
-    }
-});
+        // Send all MIDI events
+        input.on('message', function(deltaTime, message) {
+            ws.send(JSON.stringify(message), function(err) {
+                if (err) console.error("could not send message: %s", err);
+            });
+        });
+    });
+
+    return wss;
+}
+
+function createClient(url, port) {
+    var ws = new WebSocket('ws://' + url + ':' + port);
+
+    ws.on('error', function(err) {
+        console.error('could not connect to server: %s', err);
+        process.exit(3);
+    });
+
+    ws.on('open', function() {
+        console.log("connected to server at %s:%s", url, port);
+    });
+
+    ws.on('close', function(code, message) {
+        console.error('connection lost.. ' + message);
+        process.exit(3);
+    });
+
+    ws.on('message', function(data, flags) {
+        console.log("MIDI event recieved: %s", data);
+        output.sendMessage(JSON.parse(data));
+    });
+
+    return ws;
+}
