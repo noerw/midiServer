@@ -1,14 +1,14 @@
 {
   "name": "midi-server",
-  "version": "1.0.0",
-  "description": "server to exchange midi messages via websockets",
+  "version": "0.3.0",
+  "description": "client & server to exchange midi messages via websockets",
   "main": "midiServer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PauloSeb/midiServer.git"
+    "url": "git+https://github.com/noerw/midiServer.git"
   },
   "keywords": [
     "midi",
@@ -17,15 +17,14 @@
     "cli",
     "server"
   ],
-  "author": "PauloSeb & noerw",
+  "author": "noerw & PauloSeb",
   "license": "GPL-2.0",
   "bugs": {
-    "url": "https://github.com/PauloSeb/midiServer/issues"
+    "url": "https://github.com/noerw/midiServer/issues"
   },
-  "homepage": "https://github.com/PauloSeb/midiServer#readme",
+  "homepage": "https://github.com/noerw/midiServer#readme",
   "dependencies": {
     "commander": "^2.9.0",
-    "http": "0.0.0",
     "midi": "^0.9.4",
     "ws": "^0.8.1"
   }
