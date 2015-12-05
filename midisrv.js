@@ -118,7 +118,11 @@ function createClient(url, port) {
 
     ws.on('message', function(data, flags) {
         console.log("MIDI event recieved: %s", data);
-        output.sendMessage(JSON.parse(data));
+        try {
+            output.sendMessage(JSON.parse(data));
+        } catch (e) {
+            console.error('could not parse recieved data: %s', e);
+        }
     });
 
     process.on('SIGINT', function() {
