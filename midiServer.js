@@ -56,6 +56,9 @@ if (program.input) {
     if (program.input >= 0 && program.input < input.getPortCount()) {
         console.log("MIDI IN: " + input.getPortName(program.input));
         input.openPort(program.input);
+        // don't ignore any signals. (types are: sysex, clock, active sensing)
+        input.ignoreTypes(false, false, false);
+
         createServer(program.port || 1234);
     } else {
         console.log("Invalid input number. Use -l to list them.");
@@ -77,6 +80,7 @@ if (program.output) {
 }
 
 function createServer(port) {
+    var connectionCount = 0;
     var wss = new WebSocketServer({ port: port }, function(err) {
         if (err) {
             console.error(err);
@@ -86,7 +90,14 @@ function createServer(port) {
     });
 
     wss.on('connection', function(ws) {
-        console.log("client connected from %s", ws._socket.remoteAddress);
+        connectionCount++;
+        console.log("client connected from %s. clients connected: %s",
+            ws._socket.remoteAddress, connectionCount);
+
+        ws.on('close', function(code, message) {
+            connectionCount--;
+            console.log("client disconnected. total clients: %s", connectionCount);
+        });
 
         // Send all MIDI events
         input.on('message', function(deltaTime, message) {
@@ -95,8 +106,6 @@ function createServer(port) {
             });
         });
     });
-
-    return wss;
 }
 
 function createClient(url, port) {
@@ -121,5 +130,8 @@ function createClient(url, port) {
         output.sendMessage(JSON.parse(data));
     });
 
-    return ws;
+    process.on('SIGINT', function() {
+        ws.close(1001, 'client disconnected');
+        process.exit(0);
+    });
 }
