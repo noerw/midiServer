@@ -32,6 +32,13 @@ if (program.list) {
     process.exit(0);
 }
 
+// if no input nor output is given, display help & exit
+if (!program.input && !program.output) {
+    console.log("\n  Please specify at least one of the following options:")
+    program.outputHelp();
+    process.exit(0);
+}
+
 // if started with input param, open the MIDI-in port & start websocket server
 if (program.input) {
     if (program.input >= 0 && program.input < input.getPortCount()) {
