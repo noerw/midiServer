@@ -89,9 +89,12 @@ function createServer(port) {
 
         // Send all MIDI events
         input.on('message', function(deltaTime, message) {
-            ws.send(JSON.stringify(message), function(err) {
-                if (err) console.error("could not send message: %s", err);
-            });
+            // only send, if (still) connected
+            if (ws.readyState == 1) {
+                ws.send(JSON.stringify(message), function(err) {
+                    if (err) console.error("could not send message: %s", err);
+                });
+            }
         });
     });
 }
