@@ -91,7 +91,11 @@ function createServer(port) {
         input.on('message', function(deltaTime, message) {
             // only send, if (still) connected
             if (ws.readyState == 1) {
-                ws.send(JSON.stringify(message), function(err) {
+                var msg = {
+                    midi: message,
+                    deltaTime: deltaTime
+                };
+                ws.send(JSON.stringify(msg), function(err) {
                     if (err) console.error("could not send message: %s", err);
                 });
             }
@@ -100,7 +104,8 @@ function createServer(port) {
 }
 
 function createClient(url, port) {
-    var ws = new WebSocket('ws://' + url + ':' + port);
+    var ws = new WebSocket('ws://' + url + ':' + port),
+        lastMsgTimeStamp = new Date().getTime();
 
     ws.on('error', function(err) {
         console.error('could not connect to server: %s', err);
@@ -117,16 +122,27 @@ function createClient(url, port) {
     });
 
     ws.on('message', function(data, flags) {
-        console.log("MIDI event recieved: %s", data);
         try {
-            output.sendMessage(JSON.parse(data));
+            var message = JSON.parse(data);
         } catch (e) {
             console.error('could not parse recieved data: %s', e);
         }
+        output.sendMessage(message.midi);
+        console.log("MIDI event recieved: cmd: %s\t param: %s\t val: %s",
+            message.midi[0], message.midi[1], message.midi[2]);
+        console.log("relative latency to last event: %s ms",
+            getRelativeLatency(message.deltaTime).toFixed(3));
     });
 
     process.on('SIGINT', function() {
         ws.close(1001, 'client disconnected');
         process.exit(0);
     });
+
+    function getRelativeLatency(deltaTime) {
+        var currentTime = new Date().getTime();
+        var latency = currentTime - lastMsgTimeStamp - deltaTime * 1000;
+        lastMsgTimeStamp = currentTime;
+        return latency;
+    }
 }
