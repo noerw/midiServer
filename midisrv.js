@@ -33,14 +33,14 @@ if (program.list) {
 }
 
 // if no input nor output is given, display help & exit
-if (!program.input && !program.output) {
+if (program.input === undefined && !program.output === undefined) {
     console.log("\n  Please specify at least one of the following options:")
     program.outputHelp();
     process.exit(0);
 }
 
 // if started with input param, open the MIDI-in port & start websocket server
-if (program.input) {
+if (program.input !== undefined) {
     if (program.input >= 0 && program.input < input.getPortCount()) {
         console.log("MIDI IN: " + input.getPortName(program.input));
         input.openPort(program.input);
@@ -55,7 +55,7 @@ if (program.input) {
 }
 
 // if started with output param, open the MIDI-out port & start websocket client
-if (program.output) {
+if (program.output !== undefined) {
     if (program.output >= 0 && program.output < output.getPortCount()) {
         console.log("MIDI OUT: "+ output.getPortName(program.output));
         output.openPort(program.output);

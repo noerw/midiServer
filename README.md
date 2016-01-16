@@ -7,7 +7,7 @@ Allows broadcasting of MIDI messages over the network/web.
 May also function as a MIDI router on a single machine.
 
 ### Installation
-Requires `node >v0.10` and some additional tools for MIDI-IO:
+Requires `node >=v0.12` and some additional tools for MIDI-IO:
 
 On linux the packages `alsa-base`, `libasound2-dev`, `build-essential`, `python` are required.
 Windows and OSX need Python 2.7 & a C++ Compiler.
