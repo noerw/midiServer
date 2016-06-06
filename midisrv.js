@@ -9,7 +9,7 @@ var program   = require('commander'),
 
 // Define version/args
 program
-    .version('0.3.0')
+    .version('0.4.0')
     .option('-l, --list',       'list MIDI inputs/outputs by index')
     .option('-i, --input <n>',  'MIDI input number  - act as server', parseInt)
     .option('-o, --output <n>', 'MIDI output number - act as client', parseInt)
