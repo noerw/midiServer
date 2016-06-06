@@ -13,7 +13,7 @@ On linux the packages `alsa-base`, `libasound2-dev`, `build-essential`, `python`
 Windows and OSX need Python 2.7 & a C++ Compiler.
 For more information see [here](https://www.npmjs.com/package/midi#prerequisites).
 
-Once the dependencies are installed, run `npm install -g`.
+Once the dependencies are installed, run `npm install midisrv -g`.
 Now `midisrv` is in your path and callable anywhere in from the terminal.
 
 ### Usage
