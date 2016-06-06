@@ -13,26 +13,27 @@ On linux the packages `alsa-base`, `libasound2-dev`, `build-essential`, `python`
 Windows and OSX need Python 2.7 & a C++ Compiler.
 For more information see [here](https://www.npmjs.com/package/midi#prerequisites).
 
-Once the dependencies are installed, run `npm install`.
+Once the dependencies are installed, run `npm install -g`.
+Now `midisrv` is in your path and callable anywhere in from the terminal.
 
 ### Usage
 
 - display help:
 
-    `node midisrv.js -h`
+    `midisrv`
 
 - list MIDI inputs/outputs. the index is then used for the `-i` and `-o` arguments
 
-    `node midisrv.js -l`
+    `midisrv -l`
 
 - run the server, which then broadcasts MIDI messages from the selected MIDI input:
 
-    `node midisrv.js -i <midiInputNumber> [-p <portNumber]`
+    `midisrv -i <midiInputNumber> [-p <portNumber]`
 
 - run the client, which connects to a server instance, and sends the recieved messages to the selected MIDI output:
 
-    `node midisrv.js -o <midiOutputNumber> [-u <serverAddress> -p <portNumber>]`
+    `midisrv -o <midiOutputNumber> [-u <serverAddress> -p <portNumber>]`
 
 - route messages on a single machine from one midi device to another:
 
-    `node midisrv.js -i <midiInputNumber> -o <midiOutputNumber> [-p <portNumber>]`
+    `midisrv -i <midiInputNumber> -o <midiOutputNumber> [-p <portNumber>]`

@@ -3,8 +3,8 @@
   "version": "0.3.0",
   "description": "client & server to exchange midi messages via websockets",
   "main": "midisrv.js",
+  "bin": "./midisrv.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node midisrv.js"
   },
   "repository": {
@@ -18,7 +18,7 @@
     "cli",
     "server"
   ],
-  "author": "noerw & PauloSeb",
+  "author": "noerw",
   "license": "GPL-2.0",
   "bugs": {
     "url": "https://github.com/noerw/node-midisrv/issues"
@@ -27,6 +27,6 @@
   "dependencies": {
     "commander": "^2.9.0",
     "midi": "^0.9.4",
-    "ws": "^1.0.1"
+    "ws": "^1.1.0"
   }
 }

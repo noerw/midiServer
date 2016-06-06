@@ -1,4 +1,6 @@
-"use strict";
+#! /usr/bin/env node
+
+'use strict';
 
 var program   = require('commander'),
     midi      = require('midi'),
@@ -7,7 +9,7 @@ var program   = require('commander'),
 
 // Define version/args
 program
-    .version('0.3')
+    .version('0.3.0')
     .option('-l, --list',       'list MIDI inputs/outputs by index')
     .option('-i, --input <n>',  'MIDI input number  - act as server', parseInt)
     .option('-o, --output <n>', 'MIDI output number - act as client', parseInt)
