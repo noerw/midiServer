@@ -35,7 +35,7 @@ if (program.list) {
 }
 
 // if no input nor output is given, display help & exit
-if (program.input === undefined && !program.output === undefined) {
+if (program.input === undefined && program.output === undefined) {
     console.log("\n  Please specify at least one of the following options:")
     program.outputHelp();
     process.exit(0);
