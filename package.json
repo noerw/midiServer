@@ -1,6 +1,6 @@
 {
   "name": "midisrv",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "client & server to exchange midi messages via websockets",
   "main": "midisrv.js",
   "bin": "./midisrv.js",
@@ -25,8 +25,8 @@
   },
   "homepage": "https://github.com/noerw/node-midisrv#readme",
   "dependencies": {
-    "commander": "^2.9.0",
-    "midi": "^0.9.4",
-    "ws": "^1.1.0"
+    "commander": "^2.11.0",
+    "midi": "^0.9.5",
+    "ws": "^3.1.0"
   }
 }
