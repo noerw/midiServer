@@ -5,7 +5,8 @@
   "main": "midisrv.js",
   "bin": "./midisrv.js",
   "scripts": {
-    "start": "node midisrv.js"
+    "start": "node midisrv.js",
+    "dump": "node mididump.js"
   },
   "repository": {
     "type": "git",
